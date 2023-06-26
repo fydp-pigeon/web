@@ -1,14 +1,14 @@
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import SignOut from "./_components/SignOut";
+import { User } from "@prisma/client";
 
-export default async function SignInPage() {
+export const getServerUser = async (): Promise<User> => {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user) {
-    redirect("/auth/signin");
+  if (!session || !session.user) {
+    redirect("/signin");
   }
 
-  return <SignOut />;
-}
+  return session.user as User;
+};
