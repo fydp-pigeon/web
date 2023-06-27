@@ -1,6 +1,6 @@
 import { Menu } from '@/_components/landing-page/Menu';
 import { Description } from '@/_components/landing-page/Description';
-import { ChatQuestions } from '@/_components/landing-page/ChatQuestions';
+import { ChatQuestions } from '@/_components/landing-page/chat/ChatQuestions';
 import { BrowseDatasets } from './_components/landing-page/browse-datasets/BrowseDatasets';
 
 export default function Home() {

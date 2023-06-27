@@ -1,8 +1,8 @@
-import prisma from "@/_lib/server/prismadb";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import NextAuth, { Session, User } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
+import prisma from '@/_lib/server/prismadb';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import NextAuth, { Session, User } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import EmailProvider from 'next-auth/providers/email';
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -23,6 +23,14 @@ export const authOptions = {
       from: process.env.SENDGRID_FROM_EMAIL,
     }),
   ],
+  callbacks: {
+    session: async ({ session, user }: { session: Session; user: User }) => {
+      return {
+        ...session,
+        user,
+      };
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

@@ -1,18 +1,22 @@
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-export const useClientUser = () => {
+type Props = {
+  allowUnauthenticated?: boolean;
+};
+
+export const useClientUser = ({ allowUnauthenticated = false }: Props = {}) => {
   const session = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (session.status === "unauthenticated") {
-      router.push("/signin");
+    if (!allowUnauthenticated && session.status === 'unauthenticated') {
+      router.push('/signin');
     }
-  }, [session.status, router]);
+  }, [session.status, router, allowUnauthenticated]);
 
-  if (session.status === "loading" || !session.data?.user) {
+  if (session.status === 'loading' || !session.data?.user) {
     return { isLoading: true };
   }
 

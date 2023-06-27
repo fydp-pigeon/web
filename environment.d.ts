@@ -8,7 +8,17 @@ declare global {
       SENDGRID_SMTP_KEY: string;
       SENDGRID_SMTP_HOST: string;
       SENDGRID_SMTP_PORT: string;
+      OPENAI_API_KEY: string;
+      PINECONE_API_KEY: string;
+      PINECONE_ENVIRONMENT: string;
+      PINECONE_INDEX: string;
     }
+  }
+}
+
+declare module 'next-auth' {
+  export interface Session {
+    user: User | null;
   }
 }
 
