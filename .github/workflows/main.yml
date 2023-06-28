@@ -11,7 +11,20 @@ env:
   REGISTRY_NAME: pidgeonacr  
   IMAGE_NAME: fydp-app  
   KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}  # Base64-encoded kubeconfig file
-  KUBE_NAMESPACE: default  
+  KUBE_NAMESPACE: default 
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID}}
+  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+  SENDGRID_FROM_EMAIL: ${{ secrets.SENDGRID_FROM_EMAIL }}
+  SENDGRID_SMTP_USER: ${{ secrets.SENDGRID_SMTP_USER }}
+  SENDGRID_SMTP_KEY: ${{ secrets.SENDGRID_SMTP_KEY }}
+  SENDGRID_SMTP_HOST: ${{ secrets.SENDGRID_SMTP_HOST }}
+  SENDGRID_SMTP_PORT: ${{ secrets.SENDGRID_SMTP_PORT }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+  PINECONE_ENVIRONMENT: ${{ secrets.PINECONE_ENVIRONMENT }}
+  PINECONE_INDEX: ${{ secrets.PINECONE_INDEX }}
 
 jobs:
   build:
