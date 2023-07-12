@@ -53,29 +53,33 @@ export type ChatHistoryLog = {
 };
 
 export const callOpenAI = async ({ input, history = [] }: { input: string; history?: ChatHistoryLog[] }) => {
-  const chatHistory = new ChatMessageHistory();
+  try {
+    const chatHistory = new ChatMessageHistory();
 
-  for (const { question, response } of history) {
-    await chatHistory.addUserMessage(question);
-    await chatHistory.addAIChatMessage(response);
+    for (const { question, response } of history) {
+      await chatHistory.addUserMessage(question);
+      await chatHistory.addAIChatMessage(response);
+    }
+
+    const chain = new ConversationChain({
+      memory: new BufferMemory({ returnMessages: true, chatHistory, memoryKey: 'history', inputKey: 'history' }),
+      prompt: chatPrompt,
+      llm: chat,
+    });
+
+    const data = await queryPinecone(input);
+
+    const completion = await chain.call({
+      input,
+      data: JSON.stringify(data.matches[0].metadata),
+    });
+
+    return {
+      response: completion.response as string,
+      confidenceScore: data.matches[0].score,
+      dataset: data.matches[0].id,
+    };
+  } catch (e) {
+    throw Error('Error calling OpenAI: ' + e);
   }
-
-  const chain = new ConversationChain({
-    memory: new BufferMemory({ returnMessages: true, chatHistory, memoryKey: 'history', inputKey: 'history' }),
-    prompt: chatPrompt,
-    llm: chat,
-  });
-
-  const data = await queryPinecone(input);
-
-  const completion = await chain.call({
-    input,
-    data: JSON.stringify(data.matches[0].metadata),
-  });
-
-  return {
-    response: completion.response as string,
-    confidenceScore: data.matches[0].score,
-    dataset: data.matches[0].id,
-  };
 };

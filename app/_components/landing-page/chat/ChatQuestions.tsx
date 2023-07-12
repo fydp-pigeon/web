@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { ChatWindow } from './ChatWindow';
 import PaperAirplaneIcon from '@heroicons/react/24/outline/PaperAirplaneIcon';
+import { useToast } from '@/_hooks/useToast';
 
 const SAMPLE_QUESTIONS = [
   "What is the average daily occupancy of Toronto's shelters?",
@@ -16,6 +17,7 @@ const SAMPLE_QUESTIONS = [
 ];
 
 export function ChatQuestions() {
+  const showToast = useToast();
   const { text: question, setContent: setQuestion } = useTypewriter();
   const [showChatWindow, setShowChatWindow] = useState<boolean>();
   const [messages, setMessages] = useState<string[]>([]);
@@ -35,23 +37,31 @@ export function ChatQuestions() {
 
   const onSendMessage = async (message: string) => {
     if (message) {
-      setCurrentMessage('');
-      setMessages(prevMessages => [...prevMessages, message]);
-      setIsLoadingResponse(true);
+      try {
+        setCurrentMessage('');
+        setMessages(prevMessages => [...prevMessages, message]);
+        setIsLoadingResponse(true);
 
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        body: JSON.stringify({
-          input: message,
-          conversationId,
-        }),
-      });
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          body: JSON.stringify({
+            input: message,
+            conversationId,
+          }),
+        });
 
-      const respBody = await response.json();
+        const respBody = await response.json();
 
-      setIsLoadingResponse(false);
-      setConversationId(respBody.conversationId);
-      setMessages(prevMessages => [...prevMessages, respBody.response]);
+        setIsLoadingResponse(false);
+        setConversationId(respBody.conversationId);
+        setMessages(prevMessages => [...prevMessages, respBody.response]);
+      } catch (e) {
+        console.error(e);
+        showToast({
+          type: 'success',
+          text: 'There was an error! 🎉',
+        });
+      }
     }
   };
 

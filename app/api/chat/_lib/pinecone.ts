@@ -3,7 +3,7 @@ import { createEmbedding } from '@/api/chat/_lib/langchain';
 
 const pinecone = new PineconeClient({
   apiKey: process.env.PINECONE_API_KEY,
-  baseUrl: 'https://pigeon-index-abdab6a.svc.us-west1-gcp-free.pinecone.io',
+  baseUrl: process.env.PINECONE_BASE_URL,
 });
 
 export const queryPinecone = async (input: string) => {

@@ -12,6 +12,7 @@ declare global {
       PINECONE_API_KEY: string;
       PINECONE_ENVIRONMENT: string;
       PINECONE_INDEX: string;
+      PINECONE_BASE_URL: string;
     }
   }
 }

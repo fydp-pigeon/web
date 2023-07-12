@@ -1,5 +1,5 @@
 import './globals.css';
-import { NextAuthProvider, ThemeProvider } from './providers';
+import { NextAuthProvider, ThemeProvider, ToastProvider } from './providers';
 
 export const metadata = {
   title: 'Create Next App',
@@ -10,9 +10,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ThemeProvider>
       <NextAuthProvider>
-        <body>
-          <main>{children}</main>
-        </body>
+        <ToastProvider>
+          <body>
+            <main>{children}</main>
+          </body>
+        </ToastProvider>
       </NextAuthProvider>
     </ThemeProvider>
   );

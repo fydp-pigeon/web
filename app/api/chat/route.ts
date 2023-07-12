@@ -4,6 +4,8 @@ import { ChatHistoryLog, callOpenAI } from '@/api/chat/_lib/langchain';
 import prisma from '@/_lib/server/prismadb';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
+import { generateApiResponse } from '../_lib/generateApiResponse';
+import { logErrorMessage } from '../_lib/generateErrorMessage';
 
 const bodySchema = z.object({
   input: z.string(),
@@ -12,56 +14,65 @@ const bodySchema = z.object({
 });
 
 const postHandler = async (req: NextRequest) => {
-  const body = await req.json();
-  const { input, conversationId: existingConversationId } = bodySchema.parse(body);
-  const session = await getServerSession(authOptions);
+  try {
+    const body = await req.json();
+    const { input, conversationId: existingConversationId } = bodySchema.parse(body);
+    const session = await getServerSession(authOptions);
 
-  let history;
-  let newConversationId;
+    let history;
+    let newConversationId;
 
-  if (existingConversationId) {
-    history = await prisma.conversation.findUnique({
-      where: {
-        id: existingConversationId,
-      },
-      include: {
-        responses: true,
-      },
-    });
+    if (existingConversationId) {
+      history = await prisma.conversation.findUnique({
+        where: {
+          id: existingConversationId,
+        },
+        include: {
+          responses: true,
+        },
+      });
 
-    history = history?.responses;
+      history = history?.responses;
 
-    if (!history) {
-      return NextResponse.json({}, { status: 404 });
+      if (!history) {
+        return NextResponse.json({}, { status: 404 });
+      }
+    } else {
+      const newConversation = await prisma.conversation.create({
+        data: {
+          userId: session?.user?.id,
+        },
+      });
+
+      newConversationId = newConversation.id;
     }
-  } else {
-    const newConversation = await prisma.conversation.create({
+
+    const conversationId = (existingConversationId || newConversationId)!;
+
+    const { response, confidenceScore, dataset } = await callOpenAI({
+      input,
+      history,
+    });
+
+    await prisma.response.create({
       data: {
-        userId: session?.user?.id,
+        conversationId,
+        question: input,
+        response: response,
+        confidenceScore,
+        dataset,
       },
     });
 
-    newConversationId = newConversation.id;
+    return generateApiResponse({ status: 200, data: { response, conversationId } });
+  } catch (error) {
+    const errorMessage = logErrorMessage({
+      message: 'Calling chat api.',
+      error,
+    });
+
+    return generateApiResponse({ status: 500, error: errorMessage });
   }
-
-  const conversationId = (existingConversationId || newConversationId)!;
-
-  const { response, confidenceScore, dataset } = await callOpenAI({
-    input,
-    history,
-  });
-
-  await prisma.response.create({
-    data: {
-      conversationId,
-      question: input,
-      response: response,
-      confidenceScore,
-      dataset,
-    },
-  });
-
-  return NextResponse.json({ response, conversationId });
 };
 
 export { postHandler as POST };
