@@ -14,7 +14,7 @@ export function ChatWindow({ messages, className, isLoadingResponse }: Props) {
   const { user } = useClientUser({ allowUnauthenticated: true });
 
   return (
-    <div className={classNames('flex flex-col gap-2', className)}>
+    <div className={classNames('flex flex-col gap-2 overflow-auto', className)} style={{ maxHeight: '300px' }}>
       {messages.map((msg, i) => (
         <div key={i} className={classNames('chat', i % 2 === 1 ? 'chat-start' : 'chat-end')}>
           <div className="chat-image avatar">
