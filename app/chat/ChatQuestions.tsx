@@ -41,6 +41,9 @@ export function ChatQuestions() {
         setCurrentMessage('');
         setMessages(prevMessages => [...prevMessages, message]);
         setIsLoadingResponse(true);
+        if (!showChatWindow) {
+          setShowChatWindow(true);  
+        }
 
         const response = await fetch('/api/chat', {
           method: 'POST',
