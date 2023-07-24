@@ -16,7 +16,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="drawer">
               <input id="my-drawer" type="checkbox" className="drawer-toggle" />
                 <div className="drawer-content">
-                  <label htmlFor="my-drawer" className="btn sidebarbutton drawer-button">Open drawer</label>
+                  <label htmlFor="my-drawer" className="space-y-1 fixed drawer-button m-5">
+                    <div className="w-6 h-0.5 bg-gray-600"></div>
+                    <div className="w-6 h-0.5 bg-gray-600"></div>
+                    <div className="w-6 h-0.5 bg-gray-600"></div>
+                  </label>
                   <main>{children}</main>
                 </div> 
               <div className="drawer-side">
