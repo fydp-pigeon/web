@@ -4,7 +4,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -73,4 +73,14 @@ model Response {
   dataset         String
 
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model Dataset {
+  id           String   @id
+  datasetName  String   @unique
+  datasetTitle String
+  url          String
+  format       String
+  lastUpdated  DateTime
+  // data         String
 }

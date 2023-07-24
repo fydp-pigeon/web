@@ -24,15 +24,6 @@ const chatPrompt = ChatPromptTemplate.fromPromptMessages([
   HumanMessagePromptTemplate.fromTemplate(HUMAN_PROMPT),
 ]);
 
-// const chatPrompt = new ChatPromptTemplate({
-//   inputVariables: ['input', 'data', 'history'],
-//   promptMessages: [
-//     SystemMessagePromptTemplate.fromTemplate(SYSTEM_PROMPT),
-//     new MessagesPlaceholder('history'),
-//     HumanMessagePromptTemplate.fromTemplate(HUMAN_PROMPT),
-//   ],
-// });
-
 const embedding = new OpenAIEmbeddings({
   openAIApiKey: process.env.OPENAI_API_KEY,
   modelName: 'text-embedding-ada-002',
