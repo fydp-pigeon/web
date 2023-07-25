@@ -10,6 +10,8 @@ import { ApiSignUpBody, ApiSignUpResp } from '@/api/signup/_lib/signUp';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { InlineLink } from '@/_components/inputs/InlineLink';
+import { Image } from '@/_components/Image';
+import { signIn as nextAuthSignIn } from 'next-auth/react';
 
 export function SignupForm() {
   const showToast = useToast();
@@ -25,7 +27,7 @@ export function SignupForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSignedUp, setIsSignedUp] = useState<boolean>();
 
-  const onSubmit = async () => {
+  const onSubmitEmail = async () => {
     try {
       if (isSignedUp || isLoading) {
         return;
@@ -73,6 +75,18 @@ export function SignupForm() {
     setIsLoading(false);
   };
 
+  const onSubmitSso = async () => {
+    try {
+      await nextAuthSignIn('google');
+    } catch (error) {
+      console.error(error);
+      showToast({
+        type: 'danger',
+        text: String(error),
+      });
+    }
+  };
+
   if (isSignedUp) {
     return (
       <div className="mt-3 flex w-full flex-col items-center gap-3 px-5">
@@ -96,7 +110,7 @@ export function SignupForm() {
       className="space-y-4"
       onKeyDown={e => {
         if (e.key === 'Enter') {
-          onSubmit();
+          onSubmitEmail();
         }
       }}
     >
@@ -107,11 +121,16 @@ export function SignupForm() {
         <Input label="Email" isError={isErrorEmail} value={email} onChange={setEmail} required />
         <Input label="Name" isError={isErrorName} value={name} onChange={setName} required />
       </div>
-      <div className="pt-3">
-        <button className="btn-neutral btn w-24" onClick={onSubmit} disabled={isLoading}>
+      <div className="space-y-3 pb-2 pt-4">
+        <button className="btn-neutral btn w-full" onClick={() => onSubmitEmail()} disabled={isLoading}>
           {isLoading ? <Spinner /> : 'Sign up'}
         </button>
+        <button className="btn-outline btn w-full space-x-1" onClick={() => onSubmitSso()}>
+          <Image src="/google-logo.png" alt="google logo" />
+          <div>Sign up with Google</div>
+        </button>
       </div>
+
       <div className="pt-1 text-sm">
         Already have an account? <InlineLink href="/signin">Sign in.</InlineLink>
       </div>
