@@ -49,7 +49,7 @@ export function SignInForm() {
 
   const onSubmitSso = async () => {
     try {
-      await nextAuthSignIn('azure-ad');
+      await nextAuthSignIn('google');
     } catch (error) {
       console.error(error);
       showToast({
