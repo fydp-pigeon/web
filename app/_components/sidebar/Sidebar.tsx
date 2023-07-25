@@ -4,16 +4,21 @@ import {
   ChartBarIcon,
   ChatBubbleLeftRightIcon,
   MagnifyingGlassIcon,
-  TableCellsIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { SidebarItem } from './SidebarItem';
+import { getServerUser } from '@/_lib/server/getServerUser';
 
-export function Sidebar() {
+export async function Sidebar() {
+  const user = await getServerUser();
   const iconHeight = 20;
 
   return (
     <div className="text-md space-y-2">
+      <div className="px-4 pt-2 text-lg font-light">{user.name}</div>
+
+      <div className="divider" />
+
       <SidebarItem icon={<ChartBarIcon height={iconHeight} />} text="Datasets" href="/dashboard/datasets" />
       <SidebarItem icon={<BookmarkIcon height={iconHeight} />} text="Bookmarked" href="/dashboard/bookmarked" />
       <SidebarItem icon={<MagnifyingGlassIcon height={iconHeight} />} text="Explore" href="/dashboard/explore" />
