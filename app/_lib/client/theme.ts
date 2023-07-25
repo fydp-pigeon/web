@@ -3,7 +3,7 @@ import daisyUiColors from 'daisyui/src/theming/themes';
 import { getLocalStorage, setLocalStorage } from './storage';
 import { useEffect, useState } from 'react';
 
-const getTheme = () => getLocalStorage('pigeon-theme') || 'dracula';
+const getTheme = () => getLocalStorage('pigeon-theme') || 'autumn';
 
 export const setTheme = (newTheme: string) => {
   setLocalStorage('pigeon-theme', newTheme);

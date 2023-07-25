@@ -21,7 +21,7 @@ export function Conversation({ conversation }: Props) {
   const { text: title, setContent: setTitle } = useTypewriter({ initialText: conversation?.title });
 
   const [currentMessage, setCurrentMessage] = useState<string>('');
-  const [conversationId, setConversationId] = useState<string>();
+  const [conversationId, setConversationId] = useState<string>(conversation?.id || '');
   const [isLoadingResponse, setIsLoadingResponse] = useState<boolean>(false);
   const [messages, setMessages] = useState<string[]>(
     conversation?.responses?.flatMap(({ question, response }) => {
