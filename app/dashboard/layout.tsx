@@ -1,22 +1,29 @@
-import { NextAuthProvider, ThemeProvider, ToastProvider } from '@/providers';
 import { Sidebar } from '@/_components/sidebar/Sidebar';
 import { Suspense } from 'react';
 import { LoadScreen } from '@/_components/LoadScreen';
+import { Bars3Icon } from '@heroicons/react/24/outline';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { authOptions } from '@/api/auth/[...nextauth]/route';
 
 export const metadata = {
   title: 'Pigeon',
   description: "Interact in real-time with the city of Toronto's data",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    redirect('/signin');
+  }
+
   return (
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
-        <label htmlFor="my-drawer" className="drawer-button fixed m-5 cursor-pointer space-y-1">
-          <div className="h-0.5 w-6 bg-base-content"></div>
-          <div className="h-0.5 w-6 bg-base-content"></div>
-          <div className="h-0.5 w-6 bg-base-content"></div>
+        <label htmlFor="my-drawer" className="drawer-button fixed m-5 cursor-pointer space-y-1.5">
+          <Bars3Icon height={40} />
         </label>
         <main className="flex h-screen w-screen justify-center">
           <div className="my-auto flex h-min w-full flex-col items-center p-10">

@@ -7,31 +7,8 @@ import {
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { ConversationChain } from 'langchain/chains';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { SYSTEM_PROMPT, HUMAN_PROMPT } from './prompts';
-import { queryPinecone } from './pinecone';
 import { Prisma } from '@prisma/client';
-
-const chat = new ChatOpenAI({
-  openAIApiKey: process.env.OPENAI_API_KEY,
-  modelName: 'gpt-3.5-turbo',
-});
-
-// Conversational chain allows us to start a conversation with history
-const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-  SystemMessagePromptTemplate.fromTemplate(SYSTEM_PROMPT),
-  new MessagesPlaceholder('history'),
-  HumanMessagePromptTemplate.fromTemplate(HUMAN_PROMPT),
-]);
-
-const embedding = new OpenAIEmbeddings({
-  openAIApiKey: process.env.OPENAI_API_KEY,
-  modelName: 'text-embedding-ada-002',
-});
-
-export const createEmbedding = (input: string) => {
-  return embedding.embedQuery(input);
-};
 
 export type ChatHistoryLog = {
   id: string;
@@ -43,7 +20,15 @@ export type ChatHistoryLog = {
   dataset: string;
 };
 
-export const callOpenAI = async ({ input, history = [] }: { input: string; history?: ChatHistoryLog[] }) => {
+export const callOpenAIWithData = async ({
+  input,
+  data,
+  history = [],
+}: {
+  input: string;
+  data: string;
+  history?: ChatHistoryLog[];
+}) => {
   try {
     const chatHistory = new ChatMessageHistory();
 
@@ -52,23 +37,31 @@ export const callOpenAI = async ({ input, history = [] }: { input: string; histo
       await chatHistory.addAIChatMessage(response);
     }
 
+    const chat = new ChatOpenAI({
+      openAIApiKey: process.env.OPENAI_API_KEY,
+      modelName: 'gpt-3.5-turbo',
+    });
+
+    // Conversational chain allows us to start a conversation with history
+    const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+      SystemMessagePromptTemplate.fromTemplate(SYSTEM_PROMPT),
+      new MessagesPlaceholder('history'),
+      HumanMessagePromptTemplate.fromTemplate(HUMAN_PROMPT),
+    ]);
+
     const chain = new ConversationChain({
       memory: new BufferMemory({ returnMessages: true, chatHistory, memoryKey: 'history', inputKey: 'history' }),
       prompt: chatPrompt,
       llm: chat,
     });
 
-    const data = await queryPinecone(input);
-
     const completion = await chain.call({
       input,
-      data: JSON.stringify(data.matches[0].metadata),
+      data,
     });
 
     return {
       response: completion.response as string,
-      confidenceScore: data.matches[0].score,
-      dataset: data.matches[0].id,
     };
   } catch (e) {
     throw Error('Error calling OpenAI: ' + e);

@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* react-markdown library doesn't style their links */
+.react-markdown a {
+  color: rgb(37, 99, 235)  ;
+  text-decoration: underline;
+}

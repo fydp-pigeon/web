@@ -3,9 +3,9 @@
 import { useTypewriter } from '@/_hooks/useTypewriter';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { ChatWindow } from './ChatWindow';
 import PaperAirplaneIcon from '@heroicons/react/24/outline/PaperAirplaneIcon';
 import { useToast } from '@/_hooks/useToast';
+import { ChatWindow } from '../ChatWindow';
 
 const SAMPLE_QUESTIONS = [
   "What is the average daily occupancy of Toronto's shelters?",
@@ -16,7 +16,7 @@ const SAMPLE_QUESTIONS = [
   'What percentage of households in Toronto experience food insecurity?',
 ];
 
-export function ChatQuestions() {
+export function ConversationWindow() {
   const showToast = useToast();
   const { text: question, setContent: setQuestion } = useTypewriter();
   const [showChatWindow, setShowChatWindow] = useState<boolean>();
@@ -42,7 +42,7 @@ export function ChatQuestions() {
         setMessages(prevMessages => [...prevMessages, message]);
         setIsLoadingResponse(true);
         if (!showChatWindow) {
-          setShowChatWindow(true);  
+          setShowChatWindow(true);
         }
 
         const response = await fetch('/api/chat', {
@@ -88,7 +88,7 @@ export function ChatQuestions() {
       {/* Chat window */}
       <ChatWindow
         messages={messages}
-        className={classNames(showChatWindow ? 'h-96 w-4/5' : 'h-0 w-0 opacity-0', 'transition-all')}
+        className={classNames(showChatWindow ? 'h-96 w-4/5' : 'h-0 w-0 px-0 py-0 opacity-0', 'transition-all')}
         isLoadingResponse={isLoadingResponse}
       />
 

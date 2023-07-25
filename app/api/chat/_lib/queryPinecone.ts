@@ -1,5 +1,5 @@
 import { PineconeClient } from 'pinecone-client';
-import { createEmbedding } from '@/api/chat/_lib/langchain';
+import { createEmbedding } from './createEmbedding';
 
 const pinecone = new PineconeClient({
   apiKey: process.env.PINECONE_API_KEY,

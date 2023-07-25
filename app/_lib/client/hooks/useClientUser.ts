@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { User } from '@prisma/client';
 
 type Props = {
   allowUnauthenticated?: boolean;
@@ -20,5 +21,5 @@ export const useClientUser = ({ allowUnauthenticated = false }: Props = {}) => {
     return { isLoading: true };
   }
 
-  return { isLoading: false, user: session.data.user };
+  return { isLoading: false, user: session.data.user as User };
 };

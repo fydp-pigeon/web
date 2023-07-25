@@ -1,7 +1,7 @@
 import { Menu } from '@/_components/landing-page/Menu';
 import { Description } from '@/_components/landing-page/Description';
-import { ChatQuestions } from '@/chat/ChatQuestions';
-import { BrowseDatasets } from './_components/landing-page/browse-datasets/BrowseDatasets';
+import { BrowseDatasets } from '@/_components/landing-page/browse-datasets/BrowseDatasets';
+import { ConversationWindow } from './_components/landing-page/ConversationWindow';
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
       <div className="flex w-full flex-col gap-16 lg:w-3/5 xl:w-3/5">
         <Menu />
         <Description />
-        <ChatQuestions />
+        <ConversationWindow />
         <BrowseDatasets />
       </div>
     </div>

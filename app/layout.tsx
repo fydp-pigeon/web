@@ -1,6 +1,8 @@
+import { Suspense } from 'react';
 import './globals.css';
 import { NextAuthProvider, ThemeProvider, ToastProvider } from './providers';
 import { Sidebar } from '@/_components/sidebar/Sidebar';
+import { LoadScreen } from './_components/LoadScreen';
 
 export const metadata = {
   title: 'Pigeon',
@@ -13,7 +15,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <NextAuthProvider>
         <ToastProvider>
           <body>
-            <main>{children}</main>
+            <main>
+              <Suspense fallback={<LoadScreen />}>{children}</Suspense>
+            </main>
           </body>
         </ToastProvider>
       </NextAuthProvider>
