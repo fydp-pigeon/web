@@ -1,10 +1,10 @@
 import './globals.css';
 import { NextAuthProvider, ThemeProvider, ToastProvider } from './providers';
-import { Sidebar } from '@/_components/Sidebar';
+import { Sidebar } from '@/_components/sidebar/Sidebar';
 
 export const metadata = {
   title: 'Pigeon',
-  description: 'Interact in real-time with the city of Toronto\'s data',
+  description: "Interact in real-time with the city of Toronto's data",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,23 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <NextAuthProvider>
         <ToastProvider>
           <body>
-            <div className="drawer">
-              <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content">
-                  <label htmlFor="my-drawer" className="space-y-1 fixed drawer-button m-5">
-                    <div className="w-6 h-0.5 bg-gray-600"></div>
-                    <div className="w-6 h-0.5 bg-gray-600"></div>
-                    <div className="w-6 h-0.5 bg-gray-600"></div>
-                  </label>
-                  <main>{children}</main>
-                </div> 
-              <div className="drawer-side">
-                <label htmlFor="my-drawer" className="drawer-overlay"></label>
-                <ul className="menu p-4 w-80 h-full bg-base-200 text-base-content">
-                  <Sidebar />
-                </ul>
-              </div>
-            </div>
+            <main>{children}</main>
           </body>
         </ToastProvider>
       </NextAuthProvider>

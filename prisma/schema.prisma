@@ -76,11 +76,11 @@ model Response {
 }
 
 model Dataset {
-  id           String   @id
-  datasetName  String   @unique
-  datasetTitle String
-  url          String
-  format       String
-  lastUpdated  DateTime
-  // data         String
+  id          String   @id
+  name        String   @unique
+  title       String
+  url         String
+  format      String
+  lastUpdated DateTime
+  description String?
 }

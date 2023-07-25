@@ -1,38 +1,37 @@
 // @ts-ignore
-import daisyUiColors from "daisyui/src/theming/themes";
-import { getLocalStorage, setLocalStorage } from "./storage";
-import { useEffect, useState } from "react";
+import daisyUiColors from 'daisyui/src/theming/themes';
+import { getLocalStorage, setLocalStorage } from './storage';
+import { useEffect, useState } from 'react';
 
-const getTheme = () => getLocalStorage("interviews-theme") || "light";
+const getTheme = () => getLocalStorage('pigeon-theme') || 'dracula';
 
 export const setTheme = (newTheme: string) => {
-  setLocalStorage("interviews-theme", newTheme);
-  window.dispatchEvent(new Event("storage"));
-  document.querySelector("html")!.setAttribute("data-theme", newTheme);
+  setLocalStorage('pigeon-theme', newTheme);
+  window.dispatchEvent(new Event('storage'));
+  document.querySelector('html')!.setAttribute('data-theme', newTheme);
 };
 
 type ThemeColors = {
-  "color-scheme": string;
+  'color-scheme': string;
   primary: string;
   secondary: string;
   accent: string;
-  "base-100": string;
-  "base-200": string;
-  "base-300": string;
+  'base-100': string;
+  'base-200': string;
+  'base-300': string;
   neutral: string;
-  "neutral-focus": string;
+  'neutral-focus': string;
   info: string;
   success: string;
   warning: string;
   error: string;
 };
 
-const getThemeColors = (): ThemeColors =>
-  daisyUiColors[`[data-theme=${getTheme()}]`];
+const getThemeColors = (): ThemeColors => daisyUiColors[`[data-theme=${getTheme()}]`];
 
 export const useTheme = () => {
-  const lightThemeColors = daisyUiColors[`[data-theme=light]`];
-  const [theme, _setTheme] = useState<string>("");
+  const lightThemeColors = daisyUiColors[`[data-theme=autumn]`];
+  const [theme, _setTheme] = useState<string>('');
   const [themeColors, setThemeColors] = useState<ThemeColors>(lightThemeColors);
 
   useEffect(() => {
@@ -45,10 +44,10 @@ export const useTheme = () => {
       setThemeColors(getThemeColors());
     };
 
-    window.addEventListener("storage", onStorage);
+    window.addEventListener('storage', onStorage);
 
     return () => {
-      window.removeEventListener("storage", onStorage);
+      window.removeEventListener('storage', onStorage);
     };
   }, []);
 

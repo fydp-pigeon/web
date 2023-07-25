@@ -1,7 +1,6 @@
-"use client";
+'use client';
 
-import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
+import { signOut } from 'next-auth/react';
 
 export default function SignOut() {
   const handleSignOut = () => {
