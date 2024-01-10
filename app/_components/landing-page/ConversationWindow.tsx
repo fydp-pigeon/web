@@ -96,7 +96,7 @@ export function ConversationWindow() {
       <div className="mt-2 flex w-full items-center justify-center gap-2">
         <input
           type="text"
-          className="input-bordered input w-full md:w-2/3"
+          className="input input-bordered w-full md:w-2/3"
           value={currentMessage}
           placeholder={showChatWindow ? 'Send a message' : question}
           onChange={e => setCurrentMessage(e.target.value)}
@@ -104,7 +104,7 @@ export function ConversationWindow() {
           disabled={isLoadingResponse}
         />
         {showChatWindow && (
-          <button className="btn-ghost btn px-3" onClick={() => onSendMessage(currentMessage)}>
+          <button className="btn btn-ghost px-3" onClick={() => onSendMessage(currentMessage)}>
             <PaperAirplaneIcon width={24} />
           </button>
         )}
@@ -112,7 +112,7 @@ export function ConversationWindow() {
 
       {/* Toggle conversation start/end */}
       <div className="flex w-full justify-center p-2">
-        <button className="btn-primary btn" onClick={onToggleConversation}>
+        <button className="btn btn-primary" onClick={onToggleConversation}>
           {showChatWindow ? 'End' : 'Start a'} conversation
         </button>
       </div>
