@@ -16,7 +16,7 @@ export type ChatHistoryLog = {
   question: string;
   response: string;
   timestamp: Date;
-  confidenceScore: Prisma.Decimal;
+  confidenceScore: Prisma.Decimal | null;
   dataset: string;
 };
 

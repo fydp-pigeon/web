@@ -14,7 +14,6 @@ export const useTypewriter = ({ intervalMs = 40, initialText = '' }: Props = {})
 
   useEffect(() => {
     if (content) {
-      console.log(content);
       setText('');
 
       let i = 0;

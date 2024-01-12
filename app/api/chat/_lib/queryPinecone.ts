@@ -1,13 +1,17 @@
-import { PineconeClient } from 'pinecone-client';
+import { Pinecone } from '@pinecone-database/pinecone';
 import { createEmbedding } from './createEmbedding';
 
-const pinecone = new PineconeClient({
+const pinecone = new Pinecone({
   apiKey: process.env.PINECONE_API_KEY,
-  baseUrl: process.env.PINECONE_BASE_URL,
+  environment: process.env.PINECONE_ENVIRONMENT,
 });
 
 export const queryPinecone = async (input: string) => {
   const vector = await createEmbedding(input);
 
-  return await pinecone.query({ topK: 1, vector, includeMetadata: true });
+  return await pinecone.index('pigeon').query({
+    topK: 1,
+    vector,
+    includeMetadata: true,
+  });
 };

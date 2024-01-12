@@ -70,7 +70,7 @@ model Response {
   question        String
   response        String
   timestamp       DateTime @default(now())
-  confidenceScore Decimal
+  confidenceScore Decimal?
   dataset         String
 
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
