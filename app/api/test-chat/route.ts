@@ -11,10 +11,12 @@ import { generateApiResponse } from "../_lib/generateApiResponse";
 import excelToJson from "convert-excel-to-json";
 import https from "https";
 import { createWriteStream } from "fs";
+import { parseString } from "xml2js";
+import {} from "csvtojson";
 
 export async function GET(){
-    const userQuery = "what are the locations of public libraries?";
-    // const userQuery = "Tell me about active building permits";
+    const userQuery = "can you tell me about the city subject thesaurus?";
+    // const userQuery = "Tell me about active building permits"; // JSON
     
     //1. Query Pinecone
     const pineconeRes = await queryPinecone(userQuery);
@@ -34,11 +36,11 @@ export async function GET(){
     }
     // console.log(dataset.name);
     const datasetURL = dataset.url;
-    
+    // console.log(dataset)
 
     switch(dataset.format){
         case "XLSX":
-        case "XLS":{
+        case "XLS": {
             await downloadFile(datasetURL, 'tmp.xlsx');
             const result = excelToJson({
                 sourceFile: 'tmp.xlsx'
@@ -46,6 +48,23 @@ export async function GET(){
             console.log(result.Sheet1)
             break;
         }
+        case "XML": {
+            const xml = await fetch(datasetURL, {cache: "no-store"})
+            const result = parseString(await xml.text(), (_,result) => console.log(result));
+            break;
+        }
+        case "CSV": {
+            const csv = await fetch(datasetURL, {cache: "no-store"})
+            csv({
+                noheader:true,
+                output: "csv"
+            })
+            .fromString(csv)
+            .then((result)=>{ 
+                console.log(result)
+            })
+        }
+
         // default: // JSON
 
     }
