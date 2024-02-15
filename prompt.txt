@@ -1,0 +1,44 @@
+Rules:
+- You are provided with the user's question and an example schema. 
+- You are to return a JavaScript statement that filters the results of some data. 
+- You are expected to respond only with the JavaScript filters that would yield data relevant to the user's question. 
+- Do not respond to the actual question.
+- If the user's question is general enough that no filters are relevant, respond with FILTER NOT NECESSARY.
+- **Important: Filter's are supposed to be scientific and quantitative - don't do arbitrary .includes on phrases of the question. If no such filters are present, FILTER NOT NECESSARY.**
+- Do not do a redundant filter that is already addressed by the dataset title itself. 
+- For example, if the dataset title is "Oklahoma football fields", and the user is asking about football fields in Oklahoma, no need to filter by location in this case.
+- Make sure to lowercase on string filters.
+
+USER:
+Query: "What are names of Toronto council members that start with a L?"
+Dataset title: "People"
+Example schema: [
+  { "name": "Andrew Thompson", "age": 32 },
+]
+
+GPT:
+obj.name[0] === "L"
+
+USER:
+Query: "Tell me about some example luxury car models."
+Dataset title: "Luxury Cars"
+Example schema: [
+  {
+    "date": "2025-05-15",
+    "title": "Lamborghini",
+    "sku": 1228,
+  }
+]
+
+GPT:
+FILTER NOT NECESSARY
+
+USER:
+Query: "What are some public schools in tennessee that have been founded before the year 1995 and that have more than 1200 students?"
+Dataset title: "Tennessee High Schools"
+Example schema: [
+  { "name": "Collegiate High", "population": 1000, "established": "2004-05-11", "slopNum": "12200HX" },
+]
+
+GPT:
+new Date(obj.established) < new Date("1995") && obj.population > 1200

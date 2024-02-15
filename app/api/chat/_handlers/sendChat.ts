@@ -45,7 +45,7 @@ export const sendChat = async (req: NextRequest) => {
       if (!conversation) {
         return generateApiResponse({
           status: 404,
-          error: `Could not find conversation of id: ${existingConversationId}`,
+          error: `Could not find conversation with id: ${existingConversationId}`,
         });
       }
 
