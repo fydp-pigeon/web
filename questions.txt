@@ -1,0 +1,6 @@
+- Can you tell me about the different factors in cost of living for different income households in Toronto?
+- What 3 areas of the city has the highest criminal activity?
+- Can you tell me about the city's affordable housing access for youth wellbeing in little italy?
+
+// Investigate fetching this
+https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/police-annual-statistical-report-top-20-offences-of-firearms-seizures/resource/831e5815-ed9f-4727-b0ff-04738c563ce8/download/top-20-offences-of-firearms-seizures.json

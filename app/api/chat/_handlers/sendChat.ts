@@ -8,6 +8,7 @@ import { logErrorMessage } from '@/api/_lib/generateErrorMessage';
 import { queryPinecone } from '../_lib/queryPinecone';
 import { callOpenAIWithData } from '../_lib/callOpenAIWithData';
 import { callOpenAI } from '../_lib/callOpenAI';
+import { getFilteredDataFromGpt } from './getFilteredDataFromGpt';
 
 const bodySchema = z.object({
   input: z.string(),
@@ -69,16 +70,28 @@ export const sendChat = async (req: NextRequest) => {
       });
     }
 
+    const searchQuery = await callOpenAI(
+      `Generate a short search query based on this chat history: "${JSON.stringify(
+        history,
+      )}" \n \n and this input: "${input}". Only refer to the user's current and past inputs, don't worry about the responses! 
+      Respond with a short, serious search query. 
+      Use general search terms - not specific.(ex. "What are the top 5 crime spots in the city" -> "Crime spots in the city" ) 
+      Be concise.`,
+    );
+
     // Query Pinecone
-    const pineconeRes = await queryPinecone(input);
+    const pineconeRes = await queryPinecone(searchQuery);
     const confidenceScore = pineconeRes.matches[0].score;
-    const dataset = pineconeRes.matches[0].id;
-    const data = JSON.stringify(pineconeRes.matches[0].metadata);
+    const datasetId = pineconeRes.matches[0].id;
+
+    const metadata = JSON.stringify(pineconeRes.matches[0].metadata);
+    const data = JSON.stringify((await getFilteredDataFromGpt({ datasetId, userQuery: input }))?.slice(0, 10) ?? []);
 
     // Query OpenAI with data from Pinecone
     const { response } = await callOpenAIWithData({
       input,
       history,
+      metadata,
       data,
     });
 
@@ -87,8 +100,8 @@ export const sendChat = async (req: NextRequest) => {
         conversationId: conversation.id,
         question: input,
         response: response,
-        confidenceScore,
-        dataset,
+        confidenceScore: confidenceScore ? confidenceScore * 100 : null,
+        dataset: datasetId,
       },
     });
 

@@ -1,4 +1,4 @@
-import { Conversation } from './_components/Conversation';
+import { ChatWrapper } from './_components/ChatWrapper';
 import prisma from '@/_lib/server/prismadb';
 
 type Props = {
@@ -15,5 +15,5 @@ export default async function NewConversationPage({ params: { conversationId } }
     },
   });
 
-  return <Conversation conversation={conversation} />;
+  return <ChatWrapper conversation={conversation} />;
 }

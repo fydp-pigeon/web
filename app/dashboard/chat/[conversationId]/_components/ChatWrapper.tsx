@@ -15,11 +15,10 @@ type Props = {
   conversation: (Conversation & { responses: Response[] }) | null;
 };
 
-export function Conversation({ conversation }: Props) {
+export function ChatWrapper({ conversation }: Props) {
   const showToast = useToast();
   const router = useRouter();
   const { text: title, setContent: setTitle } = useTypewriter({ initialText: conversation?.title });
-
   const [currentMessage, setCurrentMessage] = useState<string>('');
   const [conversationId, setConversationId] = useState<string>(conversation?.id || '');
   const [isLoadingResponse, setIsLoadingResponse] = useState<boolean>(false);
@@ -86,7 +85,7 @@ export function Conversation({ conversation }: Props) {
       <div className="mt-2 flex w-full items-center justify-center gap-2">
         <input
           type="text"
-          className="input-bordered input w-full"
+          className="input input-bordered w-full"
           value={currentMessage}
           placeholder="Send a message"
           onChange={e => setCurrentMessage(e.target.value)}
@@ -94,7 +93,7 @@ export function Conversation({ conversation }: Props) {
           disabled={isLoadingResponse}
         />
 
-        <button className="btn-ghost btn px-3" onClick={() => onSendMessage(currentMessage)}>
+        <button className="btn btn-ghost px-3" onClick={() => onSendMessage(currentMessage)}>
           <PaperAirplaneIcon width={24} />
         </button>
       </div>

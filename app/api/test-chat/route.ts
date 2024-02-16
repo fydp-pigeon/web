@@ -45,6 +45,16 @@ const PROMPT_BACKGROUND = `
   (arr) => arr.filter(obj => obj.name[0] === "L");
 
   USER:
+  Query: "Can you give me some information about low income housing in Markham?"
+  Dataset title: "Low Income Housing Statistics"
+  Example schema: [
+    { "id": "12821111", "_op_rec": 1182, "housing_units": "109", "region": "Milton East Center" },
+  ]
+
+  GPT:
+  (arr) => arr.filter(obj => obj.region.toLowerCase().includes("markham"));
+
+  USER:
   Query: "Tell me about some example luxury car models."
   Dataset title: "Luxury Cars"
   Example schema: [
@@ -87,13 +97,13 @@ const PROMPT_BACKGROUND = `
 `;
 
 export async function GET() {
-  // const userQuery = "Can you tell me about the city's affordable housing access for youth wellbeing in little italy?"; // CSV
+  const userQuery = "Can you tell me about the city's affordable housing access for youth wellbeing in little italy?"; // CSV
   // const userQuery = "Can you tell me about the city's watermain breaks before 1991?"; // XLS
   // const userQuery = 'Can you tell me about the city subject thesaurus?'; // XML
   // const userQuery = "Tell me about active building permits"; // JSON
   // const userQuery = 'What 3 areas of the city has the highest criminal activity?'; // CSV
-  const userQuery =
-    'Can you tell me about the different factors in cost of living for different income households in Toronto?'; // CSV
+  // const userQuery =
+  //   'Can you tell me about the different factors in cost of living for different income households in Toronto?'; // CSV
 
   //1. Query Pinecone
   const pineconeRes = await queryPinecone(userQuery);
@@ -101,7 +111,7 @@ export async function GET() {
   // const metadata = JSON.stringify(pineconeRes.matches[0].metadata);
   const datasetID = pineconeRes.matches[0].id;
 
-  //2. Query database
+  // 2. Query database
   const dataset = await prisma.dataset.findUnique({
     where: {
       id: datasetID,
@@ -115,7 +125,7 @@ export async function GET() {
   const datasetURL = dataset.url;
   let data: Result = [];
 
-  console.log(dataset.name, dataset.url);
+  // return generateApiResponse({ status: 200, data: dataset });
 
   switch (dataset.format) {
     case 'XLSX':
@@ -150,8 +160,18 @@ export async function GET() {
             resolve(arraysToObjects(result));
           }),
       );
+      break;
     }
-    // default: // JSON
+    default:
+      try {
+        const jsonRes = await fetch(datasetURL, { cache: 'no-store' });
+        const json = await jsonRes.json();
+
+        data = findArrayInHaystack(JSON.parse(json)) || [];
+      } catch (e) {
+        console.log('Could not serialize data.', dataset.id, datasetURL, dataset.format);
+        return null;
+      }
   }
 
   data = sanitizeIckyData(data);

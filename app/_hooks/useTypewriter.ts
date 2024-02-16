@@ -9,8 +9,14 @@ type Props = {
 
 export const useTypewriter = ({ intervalMs = 40, initialText = '' }: Props = {}) => {
   const [text, setText] = useState<string>('');
-  const [content, setContent] = useState<string>(initialText);
+  const [content, setContent] = useState<string>();
   const [_, setIntervalId] = useState<NodeJS.Timer>();
+
+  useEffect(() => {
+    if (initialText) {
+      setContent(initialText);
+    }
+  }, [initialText]);
 
   useEffect(() => {
     if (content) {

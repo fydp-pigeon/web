@@ -16,16 +16,18 @@ export type ChatHistoryLog = {
   question: string;
   response: string;
   timestamp: Date;
-  confidenceScore: Prisma.Decimal | null;
+  confidenceScore: number | null;
   dataset: string;
 };
 
 export const callOpenAIWithData = async ({
   input,
+  metadata,
   data,
   history = [],
 }: {
   input: string;
+  metadata: string;
   data: string;
   history?: ChatHistoryLog[];
 }) => {
@@ -39,7 +41,7 @@ export const callOpenAIWithData = async ({
 
     const chat = new ChatOpenAI({
       openAIApiKey: process.env.OPENAI_API_KEY,
-      modelName: 'gpt-3.5-turbo',
+      modelName: 'gpt-4',
     });
 
     // Conversational chain allows us to start a conversation with history
@@ -57,8 +59,19 @@ export const callOpenAIWithData = async ({
 
     const completion = await chain.call({
       input,
+      metadata,
       data,
     });
+
+    let response = completion.response as string;
+
+    if (response[0] === '"') {
+      response = response.substring(1);
+    }
+
+    if (response[response.length - 1]) {
+      response = response.substring(0, response.length - 1);
+    }
 
     return {
       response: completion.response as string,
