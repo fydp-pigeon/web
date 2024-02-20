@@ -44,6 +44,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   conversations Conversation[]
+  bookmarks     Dataset[]
 }
 
 model VerificationToken {
@@ -84,4 +85,6 @@ model Dataset {
   format      String
   lastUpdated DateTime
   description String?
+  userId      String?
+  users       User[]
 }

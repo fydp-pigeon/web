@@ -15,7 +15,10 @@ export function SidebarItem({ icon, text, href, isPrimary }: Props) {
 
   return (
     <li>
-      <Link href={href} className={classNames({ active: path.includes(href), 'btn-primary': isPrimary })}>
+      <Link
+        href={href}
+        className={classNames({ active: path.includes(href), 'bg-primary text-white hover:bg-primary': isPrimary })}
+      >
         {icon}
         {text}
       </Link>

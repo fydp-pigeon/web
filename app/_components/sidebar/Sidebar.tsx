@@ -20,7 +20,11 @@ export async function Sidebar() {
       <div className="divider" />
 
       <SidebarItem icon={<ChartBarIcon height={iconHeight} />} text="Datasets" href="/dashboard/datasets" />
-      <SidebarItem icon={<BookmarkIcon height={iconHeight} />} text="Bookmarked" href="/dashboard/bookmarked" />
+      <SidebarItem
+        icon={<BookmarkIcon height={iconHeight} />}
+        text="Bookmarked"
+        href="/dashboard/datasets/bookmarked"
+      />
       <SidebarItem icon={<MagnifyingGlassIcon height={iconHeight} />} text="Explore" href="/dashboard/explore" />
 
       <div className="divider" />
