@@ -8,7 +8,7 @@ import { logErrorMessage } from '@/api/_lib/generateErrorMessage';
 import { queryPinecone } from '../_lib/queryPinecone';
 import { callOpenAIWithData } from '../_lib/callOpenAIWithData';
 import { callOpenAI } from '../_lib/callOpenAI';
-import { getFilteredDataFromGpt } from './getFilteredDataFromGpt';
+import { getFilteredDataFromGpt } from '../_lib/getFilteredDataFromGpt';
 
 const bodySchema = z.object({
   input: z.string(),

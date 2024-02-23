@@ -5,7 +5,7 @@ export const SYSTEM_PROMPT = `
   Question: """
     // The user's question will be here
   """
-  Data: """
+  Metadata: """
     // Metadata about the dataset the user is likely asking about
   """
   Data: """
@@ -40,5 +40,3 @@ export const HUMAN_PROMPT = `
   """
   Response:
 `;
-
-// the city of Toronto.

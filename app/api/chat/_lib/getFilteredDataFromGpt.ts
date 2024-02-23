@@ -4,7 +4,7 @@ import https from 'https';
 import { createWriteStream } from 'fs';
 import { parseString } from 'xml2js';
 import csv from 'csvtojson';
-import { callOpenAI } from '../_lib/callOpenAI';
+import { callOpenAI } from './callOpenAI';
 
 type Result = Record<string, any>[];
 
@@ -70,12 +70,15 @@ export const getFilteredDataFromGpt = async ({
         const jsonRes = await fetch(datasetURL, { cache: 'no-store' });
         const json = await jsonRes.json();
 
-        data = findArrayInHaystack(JSON.parse(json)) || [];
+        data = findArrayInHaystack(json) || [];
       } catch (e) {
+        console.error(e);
         console.log('Could not serialize data.', datasetId, datasetURL, dataset.format);
         return null;
       }
   }
+
+  console.log(data);
 
   data = sanitizeIckyData(data);
 
