@@ -1,6 +1,8 @@
-import { getServerUrl } from '@/_lib/server/getServerUrl';
+'use client';
+
 import classNames from 'classnames';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 
 type Props = {
@@ -11,13 +13,13 @@ type Props = {
 };
 
 export function SidebarItem({ icon, text, href, isPrimary }: Props) {
-  const path = getServerUrl().pathname;
+  const path = usePathname();
 
   return (
     <li>
       <Link
         href={href}
-        className={classNames({ active: path.includes(href), 'bg-primary text-white hover:bg-primary': isPrimary })}
+        className={classNames({ active: path === href, 'bg-primary text-white hover:bg-primary': isPrimary })}
       >
         {icon}
         {text}
