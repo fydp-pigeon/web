@@ -33,7 +33,7 @@ export const HUMAN_PROMPT = `
   {input}
   """
   Metadata: """
-  {metadata}
+  {_metadata}
   """
   Data: """
   {data}

@@ -111,7 +111,7 @@ export const sendChat = async (req: NextRequest) => {
     });
   } catch (error) {
     const errorMessage = logErrorMessage({
-      message: 'Calling chat api.',
+      message: 'Calling chat api',
       error,
     });
 

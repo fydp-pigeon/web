@@ -1,4 +1,4 @@
-import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { ChatOpenAI } from '@langchain/openai';
 import { ConversationChain } from 'langchain/chains';
 
 export const callOpenAI = async (input: string) => {

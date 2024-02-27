@@ -3,21 +3,12 @@ import {
   SystemMessagePromptTemplate,
   MessagesPlaceholder,
   HumanMessagePromptTemplate,
-} from 'langchain/prompts';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
+} from '@langchain/core/prompts';
+import { ChatOpenAI } from '@langchain/openai';
 import { ConversationChain } from 'langchain/chains';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
 import { SYSTEM_PROMPT, HUMAN_PROMPT } from './prompts';
-
-export type ChatHistoryLog = {
-  id: string;
-  conversationId: string;
-  question: string;
-  response: string;
-  timestamp: Date;
-  confidenceScore: number | null;
-  dataset: string;
-};
+import { Response } from '@prisma/client';
 
 export const callOpenAIWithData = async ({
   input,
@@ -28,14 +19,14 @@ export const callOpenAIWithData = async ({
   input: string;
   metadata: string;
   data: string;
-  history?: ChatHistoryLog[];
+  history?: Response[];
 }) => {
   try {
     const chatHistory = new ChatMessageHistory();
 
     for (const { question, response } of history) {
       await chatHistory.addUserMessage(question);
-      await chatHistory.addAIChatMessage(response);
+      await chatHistory.addAIMessage(response);
     }
 
     const chat = new ChatOpenAI({
@@ -44,22 +35,22 @@ export const callOpenAIWithData = async ({
     });
 
     // Conversational chain allows us to start a conversation with history
-    const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+    const chatPrompt = ChatPromptTemplate.fromMessages([
       SystemMessagePromptTemplate.fromTemplate(SYSTEM_PROMPT),
       new MessagesPlaceholder('history'),
       HumanMessagePromptTemplate.fromTemplate(HUMAN_PROMPT),
     ]);
 
     const chain = new ConversationChain({
-      memory: new BufferMemory({ returnMessages: true, chatHistory, memoryKey: 'history', inputKey: 'history' }),
+      memory: new BufferMemory({ returnMessages: true, chatHistory, inputKey: 'input' }),
       prompt: chatPrompt,
       llm: chat,
     });
 
     const completion = await chain.call({
       input,
-      metadata,
-      data,
+      _metadata: metadata,
+      data: data,
     });
 
     let response = completion.response as string;

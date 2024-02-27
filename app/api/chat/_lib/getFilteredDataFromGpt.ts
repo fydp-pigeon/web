@@ -78,8 +78,6 @@ export const getFilteredDataFromGpt = async ({
       }
   }
 
-  console.log(data);
-
   data = sanitizeIckyData(data);
 
   const exampleSchema = JSON.stringify(data.slice(0, 2));
