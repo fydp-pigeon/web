@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useToast } from '@/_hooks/useToast';
 import { callBackend } from '@/_lib/client/callBackend';
 import { ApiSendChatBody, ApiSendChatResponse } from '@/api/chat/_handlers/sendChat';
@@ -10,6 +10,7 @@ import { ChatWindow } from '@/_components/ChatWindow';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { BackButton } from '@/_components/inputs/BackButton';
+import { ChatMessage } from '@/_components/ChatBubble';
 
 type Props = {
   conversation: (Conversation & { responses: Response[] }) | null;
@@ -22,17 +23,18 @@ export function ChatWrapper({ conversation }: Props) {
   const [currentMessage, setCurrentMessage] = useState<string>('');
   const [conversationId, setConversationId] = useState<string>(conversation?.id || '');
   const [isLoadingResponse, setIsLoadingResponse] = useState<boolean>(false);
-  const [messages, setMessages] = useState<string[]>(
-    conversation?.responses?.flatMap(({ question, response }) => {
-      return [question, response];
-    }) || [],
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    conversation?.responses?.flatMap(({ question, response, imageUrl }) => [
+      { role: 'user', content: question },
+      { role: 'ai', content: response, imageUrl },
+    ]) || [],
   );
 
   const onSendMessage = async (message: string) => {
     if (message) {
       try {
         setCurrentMessage('');
-        setMessages(prevMessages => [...prevMessages, message]);
+        setMessages(prevMessages => [...prevMessages, { role: 'user', content: message }]);
         setIsLoadingResponse(true);
 
         const chatRes = await callBackend<ApiSendChatResponse, ApiSendChatBody>({
@@ -51,7 +53,10 @@ export function ChatWrapper({ conversation }: Props) {
         setIsLoadingResponse(false);
         setTitle(chatRes.conversationTitle);
         setConversationId(chatRes.conversationId);
-        setMessages(prevMessages => [...prevMessages, chatRes.response]);
+        setMessages(prevMessages => [
+          ...prevMessages,
+          { role: 'ai', content: chatRes.response, imageUrl: chatRes.imageUrl },
+        ]);
       } catch (e) {
         console.error(e);
         showToast({

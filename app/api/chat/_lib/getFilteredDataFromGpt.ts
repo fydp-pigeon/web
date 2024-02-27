@@ -21,11 +21,11 @@ export const getFilteredDataFromGpt = async ({
     },
   });
 
-  console.log(dataset);
-
   if (dataset === null) {
     return null;
   }
+
+  console.info('Dataset: ', dataset.title);
 
   const datasetURL = dataset.url;
   let data: Result = [];
@@ -98,7 +98,14 @@ export const getFilteredDataFromGpt = async ({
 
   const filter: <T>(arr: T[]) => T[] = eval(response);
 
-  return filter(data);
+  let filteredData;
+  try {
+    filteredData = filter(data);
+  } catch (e) {
+    filteredData = data;
+  }
+
+  return filteredData;
 };
 
 const arraysToObjects = (data: any[][]) => {
@@ -186,6 +193,7 @@ const PROMPT_BACKGROUND = `
   - For example, if the dataset title is "Oklahoma football fields", and the user is asking about football fields in Oklahoma, no need to filter by location in this case.
   - Make sure to lowercase on string filters.
   - If the schema has more than 5 keys, use a \`map\` to only include only up to the most relevant 5.
+  - Do not return markdown, just the raw javascript, please follow the format provided exactly.
 
   USER:
   Query: "What are names of Toronto council members that start with a L?"

@@ -70,6 +70,7 @@ model Response {
   conversationId  String
   question        String
   response        String
+  imageUrl        String?
   timestamp       DateTime @default(now())
   confidenceScore Int?
   dataset         String

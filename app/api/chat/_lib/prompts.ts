@@ -21,7 +21,8 @@ export const SYSTEM_PROMPT = `
   The user has no concept of the data or knowledge that the data was appended to their input by the system.
 
   After every response to a non-small-talk question, embed a hyperlink that the user can click that leads to the data.
-  The link should be in the metadata.
+  The link should be in the metadata. 
+  Important: If there is any numeric way to graph the data, using a bar chart, line chart, or whatever necessary, do so.
 
   If the user input has nothing to do with the city of Toronto (for example, the user simply introducing themself),
   then ignore the provided data and reply in a friendly way, but gently remind the user about the purpose of the 
