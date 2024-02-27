@@ -31,7 +31,7 @@ export const callOpenAIWithData = async ({
 
     const chat = new ChatOpenAI({
       openAIApiKey: process.env.OPENAI_API_KEY,
-      modelName: 'gpt-4',
+      modelName: 'gpt-4-turbo-preview',
     });
 
     // Conversational chain allows us to start a conversation with history

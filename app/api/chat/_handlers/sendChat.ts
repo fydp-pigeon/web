@@ -73,9 +73,9 @@ export const sendChat = async (req: NextRequest) => {
     const searchQuery = await callOpenAI(
       `Generate a short search query based on this chat history: "${JSON.stringify(
         history,
-      )}" \n \n and this input: "${input}". Only refer to the user's current and past inputs, don't worry about the responses! 
+      )}" \n \n and this input: "${input}". Only refer to the user's current and past questions, don't worry about the responses. 
       Respond with a short, serious search query. 
-      Use general search terms - not specific.(ex. "What are the top 5 crime spots in the city" -> "Crime spots in the city" ) 
+      Use general search terms - not specific (ex. "What are the top 5 crime spots in the city" turns into "Crime spots in the city"). 
       Be concise.`,
     );
 
