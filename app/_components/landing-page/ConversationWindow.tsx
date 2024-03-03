@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react';
 import PaperAirplaneIcon from '@heroicons/react/24/outline/PaperAirplaneIcon';
 import { useToast } from '@/_hooks/useToast';
 import { ChatWindow } from '../ChatWindow';
+import { ChatMessage } from '../ChatBubble';
+import { callBackend } from '@/_lib/client/callBackend';
+import { ApiSendChatBody, ApiSendChatResponse } from '@/api/chat/_handlers/sendChat';
 
 const SAMPLE_QUESTIONS = [
   "What is the average daily occupancy of Toronto's shelters?",
@@ -20,7 +23,7 @@ export function ConversationWindow() {
   const showToast = useToast();
   const { text: question, setContent: setQuestion } = useTypewriter();
   const [showChatWindow, setShowChatWindow] = useState<boolean>();
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState<string>('');
   const [conversationId, setConversationId] = useState<string>();
   const [isLoadingResponse, setIsLoadingResponse] = useState<boolean>(false);
@@ -39,25 +42,27 @@ export function ConversationWindow() {
     if (message) {
       try {
         setCurrentMessage('');
-        setMessages(prevMessages => [...prevMessages, message]);
+        setMessages(prevMessages => [...prevMessages, { role: 'user', content: message }]);
         setIsLoadingResponse(true);
         if (!showChatWindow) {
           setShowChatWindow(true);
         }
 
-        const response = await fetch('/api/chat', {
+        const chatRes = await callBackend<ApiSendChatResponse, ApiSendChatBody>({
+          url: '/api/chat',
           method: 'POST',
-          body: JSON.stringify({
+          body: {
             input: message,
             conversationId,
-          }),
+          },
         });
 
-        const respBody = await response.json();
-
         setIsLoadingResponse(false);
-        setConversationId(respBody.conversationId);
-        setMessages(prevMessages => [...prevMessages, respBody.response]);
+        setConversationId(chatRes.conversationId);
+        setMessages(prevMessages => [
+          ...prevMessages,
+          { role: 'ai', content: chatRes.response, imageUrl: chatRes.imageUrl },
+        ]);
       } catch (e) {
         console.error(e);
         showToast({

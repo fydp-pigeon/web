@@ -27,10 +27,10 @@ type ThemeColors = {
   error: string;
 };
 
-const getThemeColors = (): ThemeColors => daisyUiColors[`[data-theme=${getTheme()}]`];
+const getThemeColors = (): ThemeColors => (daisyUiColors as any)[`[data-theme=${getTheme() as any}]`];
 
 export const useTheme = () => {
-  const lightThemeColors = daisyUiColors[`[data-theme=autumn]`];
+  const lightThemeColors = (daisyUiColors as any)[`[data-theme=autumn]`];
   const [theme, _setTheme] = useState<string>('');
   const [themeColors, setThemeColors] = useState<ThemeColors>(lightThemeColors);
 
