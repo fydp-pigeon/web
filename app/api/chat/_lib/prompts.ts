@@ -42,6 +42,9 @@ export const SEARCH_QUERY_PROMPT = (history: string, input: string) => `
   Wrong response: "Most visited restaurants Toronto"
   Correct: "Restaurants"
 
+  Another example, let's say you see the latest question is: "Can you tell me about the city's affordable housing access for youth wellbeing in little italy?"
+  Correct: "Wellbeing Youth Housing"
+
   If the latest question is a standalone question, ONLY take the latest question. 
   You should only go back to previous questions to construct the query if the latest question is a follow up or doesn't have enough context in it.
 
