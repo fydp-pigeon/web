@@ -42,6 +42,9 @@ export const SEARCH_QUERY_PROMPT = (history: string, input: string) => `
   Wrong response: "Most visited restaurants Toronto"
   Correct: "Restaurants"
 
+  If the latest question is a standalone question, ONLY take the latest question. 
+  You should only go back to previous questions to construct the query if the latest question is a follow up or doesn't have enough context in it.
+
   Be concise, do not include specifics from the question - this is a GENERAL search query.
 `;
 
