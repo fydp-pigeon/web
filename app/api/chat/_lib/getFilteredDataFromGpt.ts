@@ -149,24 +149,6 @@ const findArrayInHaystack = (data: any): any[] | null => {
   return null;
 };
 
-const downloadFile = (url: string, filePath: string) => {
-  const request = https.get(url);
-
-  return new Promise<void>((resolve, reject) => {
-    const file = createWriteStream(filePath);
-    request.on('response', response => {
-      response.pipe(file);
-      file.on('finish', () => {
-        file.close();
-        resolve();
-      });
-    });
-    request.on('error', error => {
-      reject(error);
-    });
-  });
-};
-
 const sanitizeIckyData = <T extends Record<string, any>>(data: T[]): T[] => {
   // Truncate all value that are too large above 100 characters
   for (const obj of data) {
