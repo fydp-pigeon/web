@@ -29,6 +29,22 @@ export const SYSTEM_PROMPT = `
   conversation (ex. Do you have any questions about the open data of city of Toronto?)
 `;
 
+export const SEARCH_QUERY_PROMPT = (history: string, input: string) => `
+  Generate a short search query based on this chat history: "${JSON.stringify(
+    history,
+  )}" \n \n and this input: "${input}". 
+  
+  Only refer to the user's current and past questions, don't worry about the responses.
+  Respond with a very short and concise search query. 
+  Use general search terms - not specific (ex. "What are the top 5 crime spots in the city" turns into "Crime rates"). 
+
+  For example, let's say you see the latest question is: "What are the most visited restaurants in Toronto?"
+  Wrong response: "Most visited restaurants Toronto"
+  Correct: "Restaurants"
+
+  Be concise, do not include specifics from the question - this is a GENERAL search query.
+`;
+
 export const HUMAN_PROMPT = `
   Question: """
   {input}

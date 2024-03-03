@@ -4,11 +4,11 @@ import prisma from '@/_lib/server/prismadb';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/api/auth/[...nextauth]/route';
 import { generateApiResponse } from '@/api/_lib/generateApiResponse';
-import { logErrorMessage } from '@/api/_lib/generateErrorMessage';
 import { queryPinecone } from '../_lib/queryPinecone';
 import { callOpenAIWithData } from '../_lib/callOpenAIWithData';
 import { callOpenAI } from '../_lib/callOpenAI';
 import { getFilteredDataFromGpt } from '../_lib/getFilteredDataFromGpt';
+import { SEARCH_QUERY_PROMPT } from '../_lib/prompts';
 
 const bodySchema = z.object({
   input: z.string(),
@@ -70,14 +70,7 @@ export const sendChat = async (req: NextRequest) => {
     });
   }
 
-  const searchQuery = await callOpenAI(
-    `Generate a short search query based on this chat history: "${JSON.stringify(
-      history,
-    )}" \n \n and this input: "${input}". Only refer to the user's current and past questions, don't worry about the responses. 
-    Respond with a short, serious search query. 
-    Use general search terms - not specific (ex. "What are the top 5 crime spots in the city" turns into "Crime spots in the city"). 
-    Be concise.`,
-  );
+  const searchQuery = await callOpenAI(SEARCH_QUERY_PROMPT(JSON.stringify(history), input));
 
   console.info('Search query:', searchQuery);
 
@@ -87,7 +80,9 @@ export const sendChat = async (req: NextRequest) => {
   const datasetId = pineconeRes.matches[0].id;
 
   const metadata = JSON.stringify(pineconeRes.matches[0].metadata);
-  const data = JSON.stringify((await getFilteredDataFromGpt({ datasetId, userQuery: input }))?.slice(0, 10) ?? []);
+  const data = JSON.stringify(
+    (await getFilteredDataFromGpt({ datasetId, userQuery: input }))?.slice(0, 20) ?? [],
+  ).substring(0, 60000);
 
   // Query OpenAI with data from Pinecone
   const { response, imageUrl } = await callOpenAIWithData({
