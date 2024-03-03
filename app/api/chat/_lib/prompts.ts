@@ -30,9 +30,9 @@ export const SYSTEM_PROMPT = `
 `;
 
 export const SEARCH_QUERY_PROMPT = (history: string, input: string) => `
-  Generate a short search query based on this chat history: "${JSON.stringify(
-    history,
-  )}" \n \n and this input: "${input}". 
+  Generate a short search query based on this chat history: """${JSON.stringify(history)}""" \n \n 
+  
+  And this as the latest question: "${input}". 
   
   Only refer to the user's current and past questions, don't worry about the responses.
   Respond with a very short and concise search query. 
@@ -46,7 +46,7 @@ export const SEARCH_QUERY_PROMPT = (history: string, input: string) => `
   Correct: "Wellbeing Youth Housing"
 
   If the latest question is a standalone question, ONLY take the latest question. 
-  You should only go back to previous questions to construct the query if the latest question is a follow up or doesn't have enough context in it.
+  You should only go back to check the history if the latest question is a follow up or doesn't have enough context in it.
 
   Be concise, do not include specifics from the question - this is a GENERAL search query.
 `;
