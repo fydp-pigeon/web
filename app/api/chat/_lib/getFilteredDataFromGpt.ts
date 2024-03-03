@@ -33,9 +33,13 @@ export const getFilteredDataFromGpt = async ({
   switch (dataset.format) {
     case 'XLSX':
     case 'XLS': {
-      await downloadFile(datasetURL, 'tmp.xlsx');
+      const xlsResp = await fetch(datasetURL, {
+        cache: 'no-cache',
+      });
+      const arrayBuffer = await xlsResp.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
       const result = excelToJson({
-        sourceFile: 'tmp.xlsx',
+        source: buffer,
       });
       data = Object.values(result)[0];
       break;

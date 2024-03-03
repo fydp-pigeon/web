@@ -9,6 +9,7 @@ import { callOpenAIWithData } from '../_lib/callOpenAIWithData';
 import { callOpenAI } from '../_lib/callOpenAI';
 import { getFilteredDataFromGpt } from '../_lib/getFilteredDataFromGpt';
 import { SEARCH_QUERY_PROMPT } from '../_lib/prompts';
+import { logErrorMessage } from '@/api/_lib/generateErrorMessage';
 
 const bodySchema = z.object({
   input: z.string(),
@@ -26,94 +27,94 @@ export type ApiSendChatResponse = {
 };
 
 export const sendChat = async (req: NextRequest) => {
-  const body = await req.json();
-  const { input, conversationId: existingConversationId } = bodySchema.parse(body);
-  const session = await getServerSession(authOptions);
+  try {
+    const body = await req.json();
+    const { input, conversationId: existingConversationId } = bodySchema.parse(body);
+    const session = await getServerSession(authOptions);
 
-  let history;
-  let conversation;
+    let history;
+    let conversation;
 
-  if (existingConversationId) {
-    conversation = await prisma.conversation.findUnique({
-      where: {
-        id: existingConversationId,
-      },
-      include: {
-        responses: true,
-      },
-    });
+    if (existingConversationId) {
+      conversation = await prisma.conversation.findUnique({
+        where: {
+          id: existingConversationId,
+        },
+        include: {
+          responses: true,
+        },
+      });
 
-    if (!conversation) {
-      return generateApiResponse({
-        status: 404,
-        error: `Could not find conversation with id: ${existingConversationId}`,
+      if (!conversation) {
+        return generateApiResponse({
+          status: 404,
+          error: `Could not find conversation with id: ${existingConversationId}`,
+        });
+      }
+
+      history = conversation?.responses;
+
+      if (!history) {
+        return NextResponse.json({}, { status: 404 });
+      }
+    } else {
+      const title = (
+        await callOpenAI(
+          `Generate a short, 3-5 word title based on this input: "${input}". Respond with a short, serious label. Be concise.`,
+        )
+      ).replaceAll('"', '');
+
+      conversation = await prisma.conversation.create({
+        data: {
+          userId: session?.user?.id,
+          title,
+        },
       });
     }
 
-    history = conversation?.responses;
+    const searchQuery = await callOpenAI(SEARCH_QUERY_PROMPT(JSON.stringify(history), input));
 
-    if (!history) {
-      return NextResponse.json({}, { status: 404 });
-    }
-  } else {
-    const title = (
-      await callOpenAI(
-        `Generate a short, 3-5 word title based on this input: "${input}". Respond with a short, serious label. Be concise.`,
-      )
-    ).replaceAll('"', '');
+    console.info('Search query:', searchQuery);
 
-    conversation = await prisma.conversation.create({
+    // Query Pinecone
+    const pineconeRes = await queryPinecone(searchQuery);
+    const confidenceScore = pineconeRes.matches[0].score;
+    const datasetId = pineconeRes.matches[0].id;
+
+    const metadata = JSON.stringify(pineconeRes.matches[0].metadata);
+    const data = JSON.stringify(
+      (await getFilteredDataFromGpt({ datasetId, userQuery: input }))?.slice(0, 20) ?? [],
+    ).substring(0, 60000);
+
+    // Query OpenAI with data from Pinecone
+    const { response, imageUrl } = await callOpenAIWithData({
+      input,
+      history,
+      metadata,
+      data,
+    });
+
+    await prisma.response.create({
       data: {
-        userId: session?.user?.id,
-        title,
+        conversationId: conversation.id,
+        question: input,
+        response: response,
+        confidenceScore: confidenceScore ? confidenceScore * 100 : null,
+        dataset: datasetId,
+        imageUrl,
       },
     });
+
+    return generateApiResponse<ApiSendChatResponse>({
+      status: 200,
+      data: { response, imageUrl, conversationId: conversation.id, conversationTitle: conversation.title },
+    });
+  } catch (error) {
+    const errorMessage = logErrorMessage({
+      message: 'Calling chat api',
+      error,
+    });
+
+    return generateApiResponse({ status: 500, error: errorMessage });
   }
-
-  const searchQuery = await callOpenAI(SEARCH_QUERY_PROMPT(JSON.stringify(history), input));
-
-  console.info('Search query:', searchQuery);
-
-  // Query Pinecone
-  const pineconeRes = await queryPinecone(searchQuery);
-  const confidenceScore = pineconeRes.matches[0].score;
-  const datasetId = pineconeRes.matches[0].id;
-
-  const metadata = JSON.stringify(pineconeRes.matches[0].metadata);
-  const data = JSON.stringify(
-    (await getFilteredDataFromGpt({ datasetId, userQuery: input }))?.slice(0, 20) ?? [],
-  ).substring(0, 60000);
-
-  // Query OpenAI with data from Pinecone
-  const { response, imageUrl } = await callOpenAIWithData({
-    input,
-    history,
-    metadata,
-    data,
-  });
-
-  await prisma.response.create({
-    data: {
-      conversationId: conversation.id,
-      question: input,
-      response: response,
-      confidenceScore: confidenceScore ? confidenceScore * 100 : null,
-      dataset: datasetId,
-      imageUrl,
-    },
-  });
-
-  return generateApiResponse<ApiSendChatResponse>({
-    status: 200,
-    data: { response, imageUrl, conversationId: conversation.id, conversationTitle: conversation.title },
-  });
-  // try {
-  // } catch (error) {
-  //   const errorMessage = logErrorMessage({
-  //     message: 'Calling chat api',
-  //     error,
-  //   });
-
-  //   return generateApiResponse({ status: 500, error: errorMessage });
-  // }
 };
