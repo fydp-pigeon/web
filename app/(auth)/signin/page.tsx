@@ -1,7 +1,7 @@
 import { Card } from '@/_components/Card';
 import { SignInForm } from './_components/SignInForm';
 import { redirect } from 'next/navigation';
-import { authOptions } from '@/api/auth/[...nextauth]/route';
+import { authOptions } from '@/api/auth/[...nextauth]/_lib/authOptions';
 import { getServerSession } from 'next-auth';
 
 export default async function SignInPage() {

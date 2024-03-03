@@ -4,7 +4,7 @@ import { LoadScreen } from '@/_components/LoadScreen';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { authOptions } from '@/api/auth/[...nextauth]/route';
+import { authOptions } from '@/api/auth/[...nextauth]/_lib/authOptions';
 
 export const metadata = {
   title: 'Pigeon',

@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 import SignOut from './_components/SignOut';
-import { authOptions } from '../../api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
+import { authOptions } from '@/api/auth/[...nextauth]/_lib/authOptions';
 
 export default async function SignOutPage() {
   const session = await getServerSession(authOptions);

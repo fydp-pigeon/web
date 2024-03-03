@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import prisma from '@/_lib/server/prismadb';
 import { generateApiResponse } from '@/api/_lib/generateApiResponse';
 import { logErrorMessage } from '@/api/_lib/generateErrorMessage';
-import { authOptions } from '@/api/auth/[...nextauth]/route';
+import { authOptions } from '@/api/auth/[...nextauth]/_lib/authOptions';
 
 const bodySchema = z.object({
   email: z.string(),

@@ -2,7 +2,7 @@ import { Card } from '@/_components/Card';
 import { SignupForm } from './_components/SignUpForm';
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/api/auth/[...nextauth]/route';
+import { authOptions } from '@/api/auth/[...nextauth]/_lib/authOptions';
 
 export default async function SignupPage() {
   const session = await getServerSession(authOptions);

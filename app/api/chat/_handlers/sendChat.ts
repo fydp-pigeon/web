@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/_lib/server/prismadb';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/api/auth/[...nextauth]/route';
+import { authOptions } from '@/api/auth/[...nextauth]/_lib/authOptions';
 import { generateApiResponse } from '@/api/_lib/generateApiResponse';
 import { queryPinecone } from '../_lib/queryPinecone';
 import { callOpenAIWithData } from '../_lib/callOpenAIWithData';

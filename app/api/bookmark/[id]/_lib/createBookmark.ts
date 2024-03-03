@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import prisma from '@/_lib/server/prismadb';
 import { generateApiResponse } from '@/api/_lib/generateApiResponse';
 import { logErrorMessage } from '@/api/_lib/generateErrorMessage';
-import { authOptions } from '@/api/auth/[...nextauth]/route';
+import { authOptions } from '@/api/auth/[...nextauth]/_lib/authOptions';
 import { NextRequest } from 'next/server';
 
 type Request = {
