@@ -11,12 +11,12 @@ import { callBackend } from '@/_lib/client/callBackend';
 import { ApiSendChatBody, ApiSendChatResponse } from '@/api/chat/_handlers/sendChat';
 
 const SAMPLE_QUESTIONS = [
-  "What is the average daily occupancy of Toronto's shelters?",
-  "What is the average class size in Toronto's public schools?",
-  'Which neighborhoods in Toronto have the highest crime rates?',
-  'What is the percentage of green space in less advantaged parts the city?',
-  'How does the crime rate in Toronto vary across different seasons?',
-  'What percentage of households in Toronto experience food insecurity?',
+  'What are the different factors in cost of living for different income households?',
+  'What 10 areas of the city has the highest criminal activity?',
+  "Can you tell me about the city's affordable housing access for youth wellbeing in little italy?",
+  'Give me the top 5 licensed childcare centres with the most amount of total space.',
+  'What are some of the tallest buildings in the city?',
+  'How many households in Toronto experience food insecurity?',
 ];
 
 export function ConversationWindow() {

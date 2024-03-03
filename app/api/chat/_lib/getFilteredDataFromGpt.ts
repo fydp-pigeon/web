@@ -1,7 +1,5 @@
 import prisma from '@/_lib/server/prismadb';
 import excelToJson from 'convert-excel-to-json';
-import https from 'https';
-import { createWriteStream } from 'fs';
 import { parseString } from 'xml2js';
 import csv from 'csvtojson';
 import { callOpenAI } from './callOpenAI';
@@ -84,7 +82,7 @@ export const getFilteredDataFromGpt = async ({
 
   data = sanitizeIckyData(data);
 
-  const exampleSchema = JSON.stringify(data.slice(0, 2));
+  const exampleSchema = JSON.stringify(data.slice?.(0, 2));
   let prompt = `
     USER:
     Query: "${userQuery}"
@@ -155,7 +153,7 @@ const sanitizeIckyData = <T extends Record<string, any>>(data: T[]): T[] => {
     for (const key in obj) {
       let value = obj[key];
       if (typeof value === 'string' && value.length > 75) {
-        obj[key] = value.slice(0, 75);
+        obj[key] = value.slice?.(0, 75);
       }
     }
   }
