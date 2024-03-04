@@ -83,8 +83,10 @@ export const sendChat = async (req: NextRequest) => {
 
     const metadata = JSON.stringify(pineconeRes.matches[0].metadata);
     const data = JSON.stringify(
-      (await getFilteredDataFromGpt({ datasetId, userQuery: input }))?.slice?.(0, 20) ?? [],
+      (await getFilteredDataFromGpt({ datasetId, userQuery: input }))?.slice?.(0, 30) ?? [],
     ).substring(0, 15000);
+
+    console.log('DATA', data);
 
     // Query OpenAI with data from Pinecone
     const { response, imageUrl } = await callOpenAIWithData({

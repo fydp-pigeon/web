@@ -82,8 +82,6 @@ export const callOpenAIWithData = async ({
       const { secure_url } = await cloudinary.uploader.upload(base64Prefix + imageData);
 
       imageUrl = secure_url;
-    } else {
-      console.log(JSON.stringify(responses));
     }
 
     console.log(imageUrl);

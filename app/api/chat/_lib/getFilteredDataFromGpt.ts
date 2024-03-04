@@ -94,9 +94,11 @@ export const getFilteredDataFromGpt = async ({
 
   const response = await callOpenAI(PROMPT_BACKGROUND + prompt);
 
-  if (response === 'FILTER NOT NECESSARY') {
+  if (data.length <= 30 || response === 'FILTER NOT NECESSARY') {
     return data;
   }
+
+  console.log('RESPONSE', response);
 
   const filter: <T>(arr: T[]) => T[] = eval(response);
 
@@ -251,4 +253,14 @@ const PROMPT_BACKGROUND = `
     .sort((a, b) => parseFloat(b.POPULATION_BELOW_POVERTY_LINE_2023) - parseFloat(a.POPULATION_BELOW_POVERTY_LINE_2023))
     .slice(0, 3)
     .map(obj => ({ name: obj.name, population: obj.population, established: obj.established, POPULATION_BELOW_POVERTY_LINE_2023: obj.POPULATION_BELOW_POVERTY_LINE_2023 }));
+
+  USER:
+  Query: "What are the number of fatal and non-fatal overdoses in Toronto homeless shelters?"
+  Dataset title: "Fatal and non-fatal suspected opioid overdoses in the shelter system"
+  Example schema: [
+    {"_id": 1, "year": 2018, "year_stage": "Q1", "suspected_non_fatal_overdoses_incidents": 59, "fatal_overdoses_incident": "< 5"},
+  ]
+
+  GPT: 
+  FILTER NOT NECESSARY
 `;
