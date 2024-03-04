@@ -41,7 +41,7 @@ export const deleteBookmark = async (_: NextRequest, request: Request) => {
       },
       data: {
         bookmarks: {
-          delete: {
+          disconnect: {
             id,
           },
         },
