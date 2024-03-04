@@ -1,7 +1,6 @@
 - Can you tell me about the different factors in cost of living for different income households in Toronto?
 - What 10 areas of the city has the highest criminal activity?
 - Can you tell me about the city's affordable housing access for youth wellbeing in little italy?
-- NOT PROD: Tell me about what active building permits are, and give a few examples. 
 - Give me the top 5 licensed childcare centres with the most amount of total space.
 - How many households in Toronto experience food insecurity?
-
+- What are the number of fatal and non-fatal overdoses in Toronto homeless shelters?
