@@ -25,7 +25,6 @@ export async function Sidebar() {
         text="Bookmarked"
         href="/dashboard/datasets/bookmarked"
       />
-      <SidebarItem icon={<MagnifyingGlassIcon height={iconHeight} />} text="Explore" href="/dashboard/explore" />
 
       <div className="divider" />
 

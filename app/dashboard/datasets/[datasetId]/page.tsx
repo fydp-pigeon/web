@@ -23,7 +23,7 @@ export default async function Dataset({ params: { datasetId } }: Props) {
     <>
       <PageHeader title={dataset.title} subtext={`Last updated: ${formatDate(dataset.lastUpdated)}`} />
       <Card title="Data">
-        <Link href={dataset.url} className="btn-neutral btn">
+        <Link href={dataset.url} className="btn btn-neutral">
           <ArrowDownTrayIcon height={22} /> Download
         </Link>
       </Card>

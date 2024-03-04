@@ -20,14 +20,19 @@ export function DatasetCard({ dataset, userBookmarks }: Props) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const isBookmarked = !!userBookmarks?.find(({ id }) => dataset.id === id);
+  const bookmark = userBookmarks?.find(({ id }) => dataset.id === id);
+  const isBookmarked = !!bookmark;
   const iconHeight = 22;
 
   const onBookmark = async () => {
     setIsLoading(true);
 
     try {
-      await callBackend({ url: `/api/bookmark/${dataset.id}`, method: 'POST', body: {} });
+      if (isBookmarked) {
+        await callBackend({ url: `/api/bookmark/${bookmark.id}`, method: 'DELETE' });
+      } else {
+        await callBackend({ url: `/api/bookmark/${dataset.id}`, method: 'POST', body: {} });
+      }
 
       router.refresh();
     } catch (e) {
